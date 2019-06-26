@@ -1,12 +1,16 @@
 package cn.edu.bnuz.hxjcoolweather.util;
 
 import android.text.TextUtils;
+
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import cn.edu.bnuz.hxjcoolweather.db.City;
 import cn.edu.bnuz.hxjcoolweather.db.County;
 import cn.edu.bnuz.hxjcoolweather.db.Province;
+import cn.edu.bnuz.hxjcoolweather.gson.Weather;
 
 public class Utility {
     public static boolean handleProvinceResponse(String response) {//解析和处理服务器返回的省级数据
@@ -66,5 +70,16 @@ public class Utility {
             }
         }
         return false;
+    }
+    public static Weather handleWeatherResponse(String response) {//将返回的JSON数据解析成Weather实体类
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather");
+            String weatherContent = jsonArray.getJSONObject(0).toString();
+            return new Gson().fromJson(weatherContent, Weather.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
